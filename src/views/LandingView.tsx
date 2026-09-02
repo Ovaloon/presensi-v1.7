@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   CalendarCheck,
   CreditCard,
@@ -54,6 +54,14 @@ export function LandingView({ onNavigate }: LandingViewProps) {
   const { setDomainMode, activeSchool } = useSchoolStore();
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
+  const [liveAttendance, setLiveAttendance] = useState(84);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setLiveAttendance((current) => (current >= 96 ? 84 : current + 2));
+    }, 2400);
+    return () => window.clearInterval(timer);
+  }, []);
 
   // QRIS Checkout Modal state
   const [checkoutModalOpen, setCheckoutModalOpen] = useState(false);
@@ -66,14 +74,6 @@ export function LandingView({ onNavigate }: LandingViewProps) {
 
   // FAQ Data
   const faqs = [
-    {
-      q: "Bagaimana cara pembayaran paling mudah untuk langganan sekolah?",
-      a: "Metode pembayaran paling mudah dan direkomendasikan adalah via QRIS (Quick Response Code Indonesian Standard). Anda dapat membayar menggunakan seluruh aplikasi Mobile Banking (BCA Mobile, Livin' Mandiri, BRImo, BNI Mobile, BSI) maupun E-Wallet (GoPay, OVO, DANA, ShopeePay, LinkAja). Pembayaran langsung terverifikasi otomatis dalam 5 detik dan lisensi tenant sekolah langsung aktif saat itu juga!",
-    },
-    {
-      q: "Apakah dapat dibayar menggunakan anggaran Dana BOS (Bantuan Operasional Sekolah)?",
-      a: "Sangat bisa! Setiap pembayaran via QRIS atau Transfer Bank akan langsung menerbitkan Invoice & Kuitansi Resmi lengkap dengan nomor faktur, rincian PPN, serta bukti potong administrasi yang memenuhi standar pelaporan SPJ Dana BOS Kemendikbudristek & Kemenag.",
-    },
     {
       q: "Apakah siswa wajib membawa smartphone ke sekolah?",
       a: "Tidak wajib! Untuk sekolah yang melarang HP (khususnya jenjang SD dan SMP), sekolah dapat menggunakan fitur 'Kios Gerbang QR' di mana siswa cukup menunjukkan Kartu Pelajar ber-QR Code atau diabsenkan secara cepat oleh Wali Kelas melalui Portal Wali Kelas.",
@@ -93,7 +93,7 @@ export function LandingView({ onNavigate }: LandingViewProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col antialiased selection:bg-primary/20 selection:text-primary">
+    <div className="landing-page min-h-screen text-foreground flex flex-col antialiased selection:bg-primary/20 selection:text-primary">
       {/* Top Banner: School Solution Announcement */}
       <div className="bg-gradient-to-r from-primary/15 via-primary/5 to-primary/15 border-b border-primary/20 text-foreground py-2 px-4 text-center text-xs font-medium">
         <div className="max-w-6xl mx-auto flex items-center justify-center gap-2 flex-wrap">
@@ -114,27 +114,28 @@ export function LandingView({ onNavigate }: LandingViewProps) {
       </div>
 
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden border-b bg-gradient-to-b from-card/80 via-background to-background pt-12 pb-16 md:pt-20 md:pb-24">
-        {/* Subtle Ambient Radial Glow */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-primary/10 blur-[130px] pointer-events-none rounded-full" />
+      <section className="relative overflow-hidden border-b border-primary/15 bg-card/45 pt-12 pb-16 md:pt-20 md:pb-24">
+        <div className="landing-hero-grid absolute inset-0 pointer-events-none" />
+        <div className="absolute -right-24 top-16 size-72 rounded-full border-[28px] border-accent/35 pointer-events-none" />
+        <div className="absolute -left-20 bottom-8 size-56 rounded-full border-[18px] border-primary/15 pointer-events-none" />
 
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
           <div className="text-center max-w-3xl mx-auto space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full border bg-card/90 backdrop-blur px-4 py-1.5 text-xs font-semibold text-primary shadow-xs">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary shadow-xs">
               <Sparkles className="size-3.5 text-primary animate-pulse" />
-              <span>SaaS Presensi Multi-Tenant &amp; PWA Sekolah Modern</span>
+              <span>Sistem Presensi Digital Sekolah Modern</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.12] text-foreground">
-              Presensi Siswa Cerdas,{" "}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-foreground">
+              Kehadiran sekolah,{" "}
               <span className="text-primary underline decoration-primary/30 decoration-wavy underline-offset-8">
-                Anti-Titip Absen
+                lebih tertib
               </span>
-              , &amp; Terkoneksi Real-Time
+              , lebih mudah dipantau
             </h1>
 
             <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              Gantikan mesin fingerprint error dan buku jurnal kertas. Solusi absensi komprehensif untuk jenjang <strong>SD, SMP, SMA, &amp; SMK</strong> dengan GPS Geofencing, Kios QR Kartu Siswa, dan rekapitulasi otomatis.
+              Satu ruang kerja untuk sekolah <strong>SD, SMP, SMA, dan SMK</strong>: presensi QR, GPS, selfie, rekap otomatis, dan notifikasi wali dalam satu alur yang jelas.
             </p>
 
             {/* Quick Action CTA Buttons */}
@@ -164,16 +165,50 @@ export function LandingView({ onNavigate }: LandingViewProps) {
             {/* Social Proof & Value Highlights */}
             <div className="pt-4 flex items-center justify-center gap-6 sm:gap-10 text-xs text-muted-foreground flex-wrap">
               <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-4 text-emerald-500 shrink-0" />
+                <CheckCircle2 className="size-4 text-primary shrink-0" />
                 <span>Tanpa Mesin Tambahan</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-4 text-emerald-500 shrink-0" />
+                <CheckCircle2 className="size-4 text-primary shrink-0" />
                 <span>Format Rekap SPJ BOS</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-4 text-emerald-500 shrink-0" />
+                <CheckCircle2 className="size-4 text-primary shrink-0" />
                 <span>Siap Pakai dalam 5 Menit</span>
+              </div>
+            </div>
+
+            <div className="mx-auto mt-8 max-w-4xl overflow-hidden rounded-3xl border border-primary/20 bg-card/90 text-left shadow-xl shadow-primary/10 backdrop-blur-sm">
+              <div className="flex items-center justify-between border-b border-border/80 px-4 py-3 sm:px-6">
+                <div className="flex items-center gap-2 text-xs font-bold text-foreground">
+                  <span className="size-2 rounded-full bg-accent shadow-[0_0_0_4px_color-mix(in_oklch,var(--accent)_20%,transparent)]" />
+                  Pantauan Kehadiran Hari Ini
+                </div>
+                <span className="text-[11px] font-medium text-muted-foreground">Diperbarui sekarang</span>
+              </div>
+              <div className="grid gap-5 p-4 sm:grid-cols-[1.05fr_1.4fr] sm:p-6">
+                <div className="flex items-center gap-5">
+                  <div className="relative flex size-28 shrink-0 items-center justify-center rounded-full border-[10px] border-primary/15 sm:size-36">
+                    <div className="absolute inset-0 rounded-full border-[10px] border-transparent border-t-primary border-r-primary transition-transform duration-700" style={{ transform: `rotate(${liveAttendance * 3.6 - 45}deg)` }} />
+                    <div>
+                      <strong className="block text-center text-3xl font-black text-foreground sm:text-4xl">{liveAttendance}%</strong>
+                      <span className="block text-center text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">hadir</span>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-xs font-bold text-foreground"><span className="size-2 rounded-full bg-primary" /> 1.248 siswa terpantau</div>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground"><span className="size-2 rounded-full bg-accent" /> 38 masih ditunggu</div>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground"><span className="size-2 rounded-full bg-foreground/25" /> 12 izin / sakit</div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                  {[{ label: "Tepat waktu", value: "1.104" }, { label: "Terlambat", value: "106" }, { label: "Kelas aktif", value: "32" }].map((item) => (
+                    <div key={item.label} className="flex min-h-24 flex-col justify-between rounded-2xl border border-border/80 bg-background/70 p-3">
+                      <span className="text-[10px] font-semibold leading-tight text-muted-foreground">{item.label}</span>
+                      <strong className="text-xl font-black text-primary sm:text-2xl">{item.value}</strong>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -181,7 +216,7 @@ export function LandingView({ onNavigate }: LandingViewProps) {
           {/* 4 Essential Core Capabilities Grid */}
           <div className="mt-12 max-w-5xl mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
             <div className="p-5 rounded-2xl bg-card border border-border/80 shadow-xs space-y-2.5 hover:border-primary/50 transition-all">
-              <div className="size-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+              <div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
                 <Smartphone className="size-5" />
               </div>
               <h3 className="font-bold text-sm text-foreground">Siswa Mandiri (GPS + Selfie)</h3>
@@ -191,7 +226,7 @@ export function LandingView({ onNavigate }: LandingViewProps) {
             </div>
 
             <div className="p-5 rounded-2xl bg-card border border-border/80 shadow-xs space-y-2.5 hover:border-primary/50 transition-all">
-              <div className="size-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">
+              <div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
                 <QrCode className="size-5" />
               </div>
               <h3 className="font-bold text-sm text-foreground">Kios Gerbang (Tanpa HP)</h3>
@@ -201,7 +236,7 @@ export function LandingView({ onNavigate }: LandingViewProps) {
             </div>
 
             <div className="p-5 rounded-2xl bg-card border border-border/80 shadow-xs space-y-2.5 hover:border-primary/50 transition-all">
-              <div className="size-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold">
+              <div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
                 <MessageCircle className="size-5" />
               </div>
               <h3 className="font-bold text-sm text-foreground">Supervisi Wali Kelas &amp; WA</h3>
@@ -211,12 +246,12 @@ export function LandingView({ onNavigate }: LandingViewProps) {
             </div>
 
             <div className="p-5 rounded-2xl bg-card border border-border/80 shadow-xs space-y-2.5 hover:border-primary/50 transition-all">
-              <div className="size-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
+              <div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
                 <FileSpreadsheet className="size-5" />
               </div>
-              <h3 className="font-bold text-sm text-foreground">Rekap Dapodik &amp; SPJ BOS</h3>
+              <h3 className="font-bold text-sm text-foreground">Rekap Laporan</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Ekspor rekapitulasi format Excel/PDF dan cetak surat panggilan orang tua otomatis.
+                Lihat dan ekspor laporan kehadiran sekolah dalam format Excel dan PDF.
               </p>
             </div>
           </div>
@@ -250,34 +285,34 @@ export function LandingView({ onNavigate }: LandingViewProps) {
                 Daftarkan identitas sekolah, tentukan jam masuk dan toleransi keterlambatan, lalu impor daftar siswa dan rombel via Excel dalam hitungan detik.
               </p>
               <div className="text-[11px] font-semibold text-primary flex items-center gap-1">
-                <Check className="size-3.5 text-emerald-500" /> Template Excel Otomatis
+                <Check className="size-3.5 text-primary" /> Template Excel Otomatis
               </div>
             </div>
 
             {/* Step 2 */}
             <div className="p-6 rounded-2xl bg-card border border-border/80 shadow-xs space-y-4 relative">
-              <div className="size-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 flex items-center justify-center font-black text-lg">
+              <div className="size-12 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-black text-lg">
                 2
               </div>
               <h3 className="text-base font-bold text-foreground">Presensi Real-Time Multi-Metode</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 Siswa dan guru dapat absen mandiri menggunakan GPS Geofence &amp; Selfie, atau memindai kartu QR Code di kios gerbang sekolah tanpa memerlukan HP.
               </p>
-              <div className="text-[11px] font-semibold text-emerald-600 flex items-center gap-1">
+              <div className="text-[11px] font-semibold text-primary flex items-center gap-1">
                 <Check className="size-3.5" /> Anti-Titip Absen &amp; Anti-Fake GPS
               </div>
             </div>
 
             {/* Step 3 */}
             <div className="p-6 rounded-2xl bg-card border border-border/80 shadow-xs space-y-4 relative">
-              <div className="size-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-600 flex items-center justify-center font-black text-lg">
+              <div className="size-12 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-black text-lg">
                 3
               </div>
               <h3 className="text-base font-bold text-foreground">Rekapitulasi &amp; Laporan Otomatis</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 Laporan kehadiran harian, bulanan, dan semester siap dicetak untuk LPJ BOS, evaluasi wali kelas, hingga pengiriman notifikasi WhatsApp ke orang tua.
               </p>
-              <div className="text-[11px] font-semibold text-blue-600 flex items-center gap-1">
+              <div className="text-[11px] font-semibold text-primary flex items-center gap-1">
                 <Check className="size-3.5" /> Siap Ekspor PDF &amp; Excel
               </div>
             </div>
@@ -290,7 +325,7 @@ export function LandingView({ onNavigate }: LandingViewProps) {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 space-y-10">
           <div className="text-center max-w-3xl mx-auto space-y-3">
             <Badge variant="outline" className="text-xs font-bold text-primary border-primary/30 uppercase">
-              Paket &amp; Langganan SaaS
+              Paket &amp; Langganan Sekolah
             </Badge>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-foreground">
               Investasi Transparan &amp; Fleksibel Sesuai Kebutuhan Sekolah
@@ -323,7 +358,7 @@ export function LandingView({ onNavigate }: LandingViewProps) {
                   }`}
                 >
                   <span>Tagihan Tahunan</span>
-                  <Badge className="bg-amber-400 text-slate-950 text-[9px] px-2 py-0.2 font-black uppercase">
+                  <Badge className="bg-accent text-accent-foreground text-[9px] px-2 py-0.2 font-black uppercase">
                     HEMAT 20%
                   </Badge>
                 </button>
@@ -333,7 +368,7 @@ export function LandingView({ onNavigate }: LandingViewProps) {
 
           {/* 3 Pricing Cards Grid */}
           <div className="grid md:grid-cols-3 gap-6 items-stretch">
-            {/* TIER 1: STARTER */}
+            {/* PAKET 1 */}
             <Card className="border border-border/80 transition-all flex flex-col justify-between bg-card hover:border-primary/50 shadow-xs">
               <CardHeader className="pb-4 border-b border-border/80">
                 <Badge variant="outline" className="w-fit text-xs font-bold uppercase text-muted-foreground border-border">
@@ -343,7 +378,7 @@ export function LandingView({ onNavigate }: LandingViewProps) {
                   Starter Sekolah
                 </CardTitle>
                 <p className="text-xs text-muted-foreground">
-                  Cocok untuk SD, TK, atau Bimbingan Belajar skala kecil dengan kebutuhan dasar.
+                  Cocok untuk SD, TK, atau bimbingan belajar skala kecil dengan kebutuhan dasar.
                 </p>
                 <div className="pt-3">
                   <span className="text-2xl sm:text-3xl font-black text-foreground">Gratis</span>
@@ -356,19 +391,19 @@ export function LandingView({ onNavigate }: LandingViewProps) {
               <CardContent className="pt-5 space-y-3 text-xs flex-1">
                 <div className="space-y-2.5">
                   <div className="flex items-center gap-2 text-foreground font-medium">
-                    <Check className="size-3.5 text-emerald-500 shrink-0" />
+                    <Check className="size-3.5 text-primary shrink-0" />
                     <span>Presensi QR Scanner &amp; Kartu RFID</span>
                   </div>
                   <div className="flex items-center gap-2 text-foreground font-medium">
-                    <Check className="size-3.5 text-emerald-500 shrink-0" />
+                    <Check className="size-3.5 text-primary shrink-0" />
                     <span>Mode Offline PWA (Bebas Memori HP)</span>
                   </div>
                   <div className="flex items-center gap-2 text-foreground font-medium">
-                    <Check className="size-3.5 text-emerald-500 shrink-0" />
+                    <Check className="size-3.5 text-primary shrink-0" />
                     <span>Rekapitulasi Excel &amp; CSV Standar</span>
                   </div>
                   <div className="flex items-center gap-2 text-foreground font-medium">
-                    <Check className="size-3.5 text-emerald-500 shrink-0" />
+                    <Check className="size-3.5 text-primary shrink-0" />
                     <span>GPS Radius 1 Titik Gedung</span>
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground/60 line-through">
@@ -377,7 +412,7 @@ export function LandingView({ onNavigate }: LandingViewProps) {
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground/60 line-through">
                     <X className="size-3.5 text-muted-foreground/70 shrink-0" />
-                    <span>Kustom Logo &amp; Tema White-Label</span>
+                    <span>Logo &amp; Tema Sekolah Sendiri</span>
                   </div>
                 </div>
               </CardContent>
@@ -393,7 +428,7 @@ export function LandingView({ onNavigate }: LandingViewProps) {
               </div>
             </Card>
 
-            {/* TIER 2: PRO */}
+            {/* PAKET 2 */}
             <Card className="border-2 border-primary bg-card shadow-lg flex flex-col justify-between relative ring-1 ring-primary/20">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <Badge className="bg-primary text-primary-foreground font-black text-[10px] uppercase shadow-xs px-3 py-0.5">
@@ -417,7 +452,7 @@ export function LandingView({ onNavigate }: LandingViewProps) {
                   <span className="text-xs text-muted-foreground ml-1">
                     {billingCycle === "annual" ? "/ tahun" : "/ bulan"}
                   </span>
-                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">
+                  <p className="text-[11px] text-primary font-semibold mt-0.5">
                     {billingCycle === "annual"
                       ? "Setara ~Rp 157.500/bulan (Hemat Rp 498.000/thn)"
                       : "Hanya ~Rp 165/siswa per bulan"}
@@ -435,11 +470,11 @@ export function LandingView({ onNavigate }: LandingViewProps) {
                   </div>
                   <div className="flex items-center gap-2 text-foreground font-medium">
                     <Check className="size-3.5 text-primary shrink-0" />
-                    <span>Multi-Campus (3 Titik Lokasi GPS)</span>
+                    <span>Hingga 3 Titik Lokasi GPS</span>
                   </div>
                   <div className="flex items-center gap-2 text-foreground font-medium">
                     <Check className="size-3.5 text-primary shrink-0" />
-                    <span>Subdomain Khusus Tenant Sekolah</span>
+                    <span>Subdomain Khusus Sekolah</span>
                   </div>
                   <div className="flex items-center gap-2 text-foreground font-medium">
                     <Check className="size-3.5 text-primary shrink-0" />
@@ -466,22 +501,22 @@ export function LandingView({ onNavigate }: LandingViewProps) {
               </div>
             </Card>
 
-            {/* TIER 3: ENTERPRISE */}
-            <Card className="border border-border/80 bg-card shadow-md flex flex-col justify-between relative hover:border-amber-500/50 transition-all">
+            {/* PAKET 3 */}
+            <Card className="border-2 border-accent bg-accent/10 shadow-[0_16px_45px_color-mix(in_oklch,var(--accent)_22%,transparent)] flex flex-col justify-between relative ring-2 ring-accent/20 hover:shadow-[0_18px_55px_color-mix(in_oklch,var(--accent)_32%,transparent)] transition-all">
               <div className="absolute -top-3 right-4">
-                <Badge className="bg-amber-500 text-slate-950 font-black text-[10px] uppercase shadow-xs px-3 py-0.5">
-                  REKOMENDASI YAYASAN &amp; SMK
+                <Badge className="bg-accent text-accent-foreground font-black text-[10px] uppercase shadow-xs px-3 py-0.5">
+                  PALING LENGKAP
                 </Badge>
               </div>
               <CardHeader className="pb-4 border-b border-border/80">
-                <Badge className="w-fit bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-xs font-black uppercase">
+                <Badge className="w-fit bg-accent/30 text-accent-foreground border border-accent/60 text-xs font-black uppercase">
                   Enterprise
                 </Badge>
                 <CardTitle className="text-xl font-black text-foreground mt-2 flex items-center gap-1.5">
-                  Enterprise <Crown className="size-4 text-amber-500 shrink-0" />
+                  Enterprise <Crown className="size-4 text-accent-foreground shrink-0" />
                 </CardTitle>
                 <p className="text-xs text-muted-foreground">
-                  Untuk SMK Kejuruan, Pesantren Terpadu, &amp; Yayasan Pendidikan Multi-Kampus.
+                  Untuk SMK kejuruan, pesantren terpadu, dan yayasan pendidikan berskala besar.
                 </p>
                 <div className="pt-3">
                   <span className="text-2xl sm:text-3xl font-black text-foreground">
@@ -490,49 +525,49 @@ export function LandingView({ onNavigate }: LandingViewProps) {
                   <span className="text-xs text-muted-foreground ml-1">
                     {billingCycle === "annual" ? "/ tahun" : "/ bulan"}
                   </span>
-                  <p className="text-[11px] text-amber-600 dark:text-amber-400 font-semibold mt-0.5">
+                  <p className="text-[11px] text-accent-foreground font-semibold mt-0.5">
                     {billingCycle === "annual"
                       ? "Setara ~Rp 315.800/bulan (Hemat Rp 998.000/thn)"
                       : "Hanya ~Rp 80/siswa per bulan"}
                   </p>
                 </div>
-                <div className="font-mono text-xs font-black text-amber-600 dark:text-amber-400 mt-1">
-                  Hingga 120 Rombel • 5.000 Siswa • Unlimited GTK
+                <div className="font-mono text-xs font-black text-accent-foreground mt-1">
+                  Hingga 120 Rombel • 5.000 Siswa • Tanpa Batas Tenaga Kependidikan
                 </div>
               </CardHeader>
               <CardContent className="pt-5 space-y-3 text-xs flex-1">
                 <div className="space-y-2.5">
                   <div className="flex items-center gap-2 text-foreground font-bold">
-                    <CheckCheck className="size-3.5 text-amber-500 shrink-0" />
+                    <CheckCheck className="size-3.5 text-accent-foreground shrink-0" />
                     <span>Semua fitur Pro</span>
                   </div>
                   <div className="flex items-center gap-2 text-foreground font-semibold">
-                    <CheckCheck className="size-3.5 text-amber-500 shrink-0" />
-                    <span>Full White-Label (Logo &amp; Tema Mandiri)</span>
+                    <CheckCheck className="size-3.5 text-accent-foreground shrink-0" />
+                    <span>Logo &amp; Tema Sekolah Sendiri</span>
                   </div>
                   <div className="flex items-center gap-2 text-foreground font-semibold">
-                    <CheckCheck className="size-3.5 text-amber-500 shrink-0" />
-                    <span>Kapasitas Rombel Besar &amp; Multi-Scanner</span>
+                    <CheckCheck className="size-3.5 text-accent-foreground shrink-0" />
+                    <span>Kapasitas Besar &amp; Banyak Pemindai</span>
                   </div>
                   <div className="flex items-center gap-2 text-foreground font-semibold">
-                    <CheckCheck className="size-3.5 text-amber-500 shrink-0" />
-                    <span>Multi-Campus 15 Titik Lokasi GPS</span>
+                    <CheckCheck className="size-3.5 text-accent-foreground shrink-0" />
+                    <span>Hingga 15 Titik Lokasi GPS</span>
                   </div>
                   <div className="flex items-center gap-2 text-foreground font-semibold">
-                    <CheckCheck className="size-3.5 text-amber-500 shrink-0" />
-                    <span>Sinkronisasi Cloud PostgreSQL &amp; Supabase</span>
+                    <CheckCheck className="size-3.5 text-accent-foreground shrink-0" />
+                    <span>Penyimpanan Cloud Terpusat</span>
                   </div>
                   <div className="flex items-center gap-2 text-foreground font-semibold">
-                    <CheckCheck className="size-3.5 text-amber-500 shrink-0" />
-                    <span>Dedicated Support 24/7 &amp; SLA Prioritas</span>
+                    <CheckCheck className="size-3.5 text-accent-foreground shrink-0" />
+                    <span>Dukungan Prioritas</span>
                   </div>
                 </div>
               </CardContent>
-              <div className="p-5 border-t border-border/80 bg-amber-500/5">
+              <div className="p-5 border-t border-border/80 bg-accent/10">
                 <Button
                   type="button"
                   onClick={() => handleOpenCheckout("enterprise")}
-                  className="w-full text-xs font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 shadow-md h-10 gap-1.5"
+                  className="w-full text-xs font-bold bg-accent hover:bg-accent/85 text-accent-foreground shadow-md h-10 gap-1.5"
                 >
                   <Crown className="size-4" /> Pilih Paket Enterprise
                 </Button>
@@ -636,7 +671,7 @@ export function LandingView({ onNavigate }: LandingViewProps) {
               </span>
               <div>
                 <span className="font-bold text-foreground text-sm">Presensi.app</span>
-                <span className="block text-[10px]">SaaS Presensi Multi-Tenant &amp; PWA Sekolah Terpadu</span>
+                <span className="block text-[10px]">Sistem Presensi Digital Sekolah Terpadu</span>
               </div>
             </div>
 
@@ -665,7 +700,7 @@ export function LandingView({ onNavigate }: LandingViewProps) {
           <div className="pt-4 border-t text-center text-[11px] text-muted-foreground flex flex-col sm:flex-row items-center justify-between gap-2">
             <p>© {new Date().getFullYear()} Presensi.app. Membantu kemajuan pendidikan di seluruh Indonesia.</p>
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
+              <span className="flex items-center gap-1 text-primary font-semibold">
                 <CheckCircle2 className="size-3.5" /> PWA Aktif &amp; Siap Digunakan
               </span>
               <span className="flex items-center gap-1 text-primary font-semibold">

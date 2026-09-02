@@ -49,12 +49,11 @@ export function AuthView({ initialTab = "admin", onNavigate }: AuthViewProps) {
   const [nis, setNis] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    setTimeout(() => {
-      try {
+    try {
         if (tab === "siswa") {
           if (!schoolCode.trim()) {
             toast.error("Silakan masukkan Kode Sekolah resmi Anda.");
@@ -67,7 +66,7 @@ export function AuthView({ initialTab = "admin", onNavigate }: AuthViewProps) {
             return;
           }
           const success = loginStudent(schoolCode.trim(), nis.trim(), password);
-          if (success) {
+          if (success && password.trim()) {
             toast.success("Autentikasi berhasil. Selamat datang di Portal Siswa.");
             onNavigate("dashboard");
           } else {
@@ -85,7 +84,7 @@ export function AuthView({ initialTab = "admin", onNavigate }: AuthViewProps) {
             return;
           }
           const result = loginTeacherOrStaff(schoolCode.trim(), teacherIdentifier.trim(), password);
-          if (result.success) {
+          if (result.success && password.trim()) {
             toast.success(result.message || "Autentikasi berhasil. Selamat datang di Portal GTK.");
             onNavigate("dashboard");
           } else {
@@ -98,11 +97,11 @@ export function AuthView({ initialTab = "admin", onNavigate }: AuthViewProps) {
             setLoading(false);
             return;
           }
-          const isSuper =
-            email.toLowerCase().includes("superadmin") ||
-            email.toLowerCase().includes("super") ||
-            email.toLowerCase().includes("master");
-          loginWithCredentials(email.trim(), password, isSuper ? "superadmin" : "admin");
+          const result = await loginWithCredentials(email.trim(), password, "admin");
+          if (!result.success) {
+            toast.error(result.message || "Email atau kata sandi tidak valid.");
+            return;
+          }
           toast.success("Autentikasi berhasil. Selamat datang kembali di Dashboard Manajemen.");
           onNavigate("dashboard");
         }
@@ -111,7 +110,6 @@ export function AuthView({ initialTab = "admin", onNavigate }: AuthViewProps) {
       } finally {
         setLoading(false);
       }
-    }, 350);
   };
 
   return (

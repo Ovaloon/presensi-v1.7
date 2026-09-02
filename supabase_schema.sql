@@ -285,6 +285,7 @@ CREATE TABLE IF NOT EXISTS public.student_leave_requests (
 CREATE TABLE IF NOT EXISTS public.gtk_profiles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     school_id UUID NOT NULL REFERENCES public.schools(id) ON DELETE CASCADE,
+    user_id UUID UNIQUE,
     nip_or_nik VARCHAR(50) NOT NULL,
     full_name VARCHAR(150) NOT NULL,
     gtk_role VARCHAR(50) NOT NULL,

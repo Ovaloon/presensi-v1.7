@@ -36,7 +36,7 @@ export function RegisterView({ onNavigate }: RegisterViewProps) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (password.length < 6) {
@@ -51,14 +51,17 @@ export function RegisterView({ onNavigate }: RegisterViewProps) {
 
     setLoading(true);
 
-    setTimeout(() => {
-      try {
+    try {
         // Create school if name provided
         if (schoolName.trim()) {
           createSchool(schoolName.trim(), "1000" + Math.floor(1000 + Math.random() * 9000));
         }
 
-        registerAccount(fullName, email, password);
+        const result = await registerAccount(fullName, email, password);
+        if (!result.success) {
+          toast.error(result.message || "Pendaftaran gagal.");
+          return;
+        }
         toast.success("Pendaftaran instansi berhasil! Selamat datang di Presensia.");
         onNavigate("dashboard");
       } catch (err) {
@@ -66,7 +69,6 @@ export function RegisterView({ onNavigate }: RegisterViewProps) {
       } finally {
         setLoading(false);
       }
-    }, 500);
   };
 
   return (

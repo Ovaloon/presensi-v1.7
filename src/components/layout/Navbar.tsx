@@ -1,8 +1,7 @@
 import React from "react";
-import { Fingerprint, QrCode, Sun, Moon, Smartphone, ArrowRight, ShieldCheck } from "lucide-react";
+import { Fingerprint, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/lib/theme";
-import { useSchoolStore } from "@/lib/store";
 
 interface NavbarProps {
   onNavigate: (view: string) => void;
@@ -10,8 +9,7 @@ interface NavbarProps {
 }
 
 export function Navbar({ onNavigate }: NavbarProps) {
-  const { theme, toggleTheme, isDark } = useTheme();
-  const { domainMode, setDomainMode } = useSchoolStore();
+  const { toggleTheme, isDark } = useTheme();
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/70">
@@ -34,36 +32,6 @@ export function Navbar({ onNavigate }: NavbarProps) {
         </button>
 
         <nav className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              const pricingEl = document.getElementById("pricing");
-              if (pricingEl) {
-                pricingEl.scrollIntoView({ behavior: "smooth" });
-              } else {
-                onNavigate("landing");
-              }
-            }}
-            className="text-foreground text-xs font-semibold rounded-xl h-9 px-3 hidden md:inline-flex gap-1"
-          >
-            <QrCode className="size-3.5 text-primary" />
-            <span>Paket &amp; QRIS</span>
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setDomainMode("presensiku.app");
-              onNavigate("absen");
-            }}
-            className="inline-flex items-center gap-1.5 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 font-semibold text-xs rounded-xl h-9 px-3"
-          >
-            <Smartphone className="size-3.5 shrink-0" />
-            <span>Presensi Siswa</span>
-          </Button>
-
           <Button
             variant="ghost"
             size="sm"

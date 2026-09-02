@@ -5,7 +5,7 @@
 
 /*
  * Design system — Presensi Sekolah
- * Ink navy + teal, warm paper background. All colors are semantic tokens.
+ * Ink, teal, and coral on a warm paper background.
  */
 
 @theme inline {
@@ -71,20 +71,20 @@
 
 :root {
   --radius: 0.75rem;
-  --background: oklch(0.985 0.006 95);
-  --foreground: oklch(0.24 0.035 255);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.24 0.035 255);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.24 0.035 255);
-  --primary: oklch(0.36 0.1 258);
-  --primary-foreground: oklch(0.985 0.006 95);
-  --secondary: oklch(0.945 0.012 250);
-  --secondary-foreground: oklch(0.3 0.05 258);
-  --muted: oklch(0.955 0.008 240);
-  --muted-foreground: oklch(0.52 0.03 255);
-  --accent: oklch(0.94 0.03 262);
-  --accent-foreground: oklch(0.3 0.06 258);
+  --background: oklch(0.975 0.012 92);
+  --foreground: oklch(0.22 0.035 220);
+  --card: oklch(0.995 0.004 92);
+  --card-foreground: oklch(0.22 0.035 220);
+  --popover: oklch(0.995 0.004 92);
+  --popover-foreground: oklch(0.22 0.035 220);
+  --primary: oklch(0.48 0.12 178);
+  --primary-foreground: oklch(0.985 0.012 92);
+  --secondary: oklch(0.93 0.035 175);
+  --secondary-foreground: oklch(0.28 0.06 190);
+  --muted: oklch(0.945 0.014 100);
+  --muted-foreground: oklch(0.48 0.035 220);
+  --accent: oklch(0.93 0.07 55);
+  --accent-foreground: oklch(0.3 0.07 45);
   --destructive: oklch(0.58 0.2 25);
   --destructive-foreground: oklch(0.985 0.006 95);
   --success: oklch(0.62 0.13 155);
@@ -93,19 +93,19 @@
   --warning-foreground: oklch(0.26 0.05 60);
   --info: oklch(0.62 0.11 240);
   --info-foreground: oklch(0.985 0.006 95);
-  --border: oklch(0.9 0.012 250);
-  --input: oklch(0.9 0.012 250);
-  --ring: oklch(0.55 0.09 210);
+  --border: oklch(0.88 0.025 175);
+  --input: oklch(0.88 0.025 175);
+  --ring: oklch(0.62 0.13 178);
   --chart-1: oklch(0.62 0.13 155);
   --chart-2: oklch(0.78 0.15 78);
   --chart-3: oklch(0.62 0.11 240);
   --chart-4: oklch(0.58 0.2 25);
   --chart-5: oklch(0.72 0.13 178);
-  --sidebar: oklch(0.28 0.05 258);
-  --sidebar-foreground: oklch(0.93 0.01 250);
-  --sidebar-primary: oklch(0.55 0.13 258);
+  --sidebar: oklch(0.25 0.045 220);
+  --sidebar-foreground: oklch(0.93 0.015 175);
+  --sidebar-primary: oklch(0.68 0.13 178);
   --sidebar-primary-foreground: oklch(0.98 0.006 95);
-  --sidebar-accent: oklch(0.34 0.055 258);
+  --sidebar-accent: oklch(0.32 0.055 220);
   --sidebar-accent-foreground: oklch(0.97 0.006 95);
   --sidebar-border: oklch(0.36 0.05 258);
   --sidebar-ring: oklch(0.55 0.13 258);
@@ -121,6 +121,34 @@
   --status-alpa-foreground: oklch(0.48 0.14 25);
 }
 
+.landing-page {
+  --primary: oklch(0.32 0.12 255);
+  --primary-foreground: oklch(0.985 0.006 95);
+  --accent: oklch(0.68 0.13 178);
+  --accent-foreground: oklch(0.16 0.04 220);
+  --ring: oklch(0.56 0.13 255);
+  background:
+    radial-gradient(circle at 8% 8%, color-mix(in oklch, var(--primary) 12%, transparent), transparent 28rem),
+    radial-gradient(circle at 92% 22%, color-mix(in oklch, var(--accent) 22%, transparent), transparent 24rem),
+    var(--color-background);
+}
+
+.dark .landing-page {
+  --primary: oklch(0.72 0.13 178);
+  --primary-foreground: oklch(0.16 0.03 220);
+  --accent: oklch(0.32 0.05 258);
+  --accent-foreground: oklch(0.12 0.04 220);
+  --ring: oklch(0.72 0.13 178);
+}
+
+.landing-hero-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in oklch, var(--primary) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklch, var(--primary) 10%, transparent) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, black, transparent 88%);
+}
+
 .dark {
   --background: oklch(0.19 0.03 255);
   --foreground: oklch(0.95 0.008 250);
@@ -128,7 +156,7 @@
   --card-foreground: oklch(0.95 0.008 250);
   --popover: oklch(0.24 0.035 255);
   --popover-foreground: oklch(0.95 0.008 250);
-  --primary: oklch(0.72 0.13 178);
+  --primary: oklch(0.76 0.13 178);
   --primary-foreground: oklch(0.19 0.03 255);
   --secondary: oklch(0.3 0.04 255);
   --secondary-foreground: oklch(0.95 0.008 250);

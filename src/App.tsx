@@ -24,7 +24,12 @@ import { Toaster, toast } from "sonner";
 
 function AppContent() {
   const { currentUser, role } = useSchoolStore();
-  const [currentView, setCurrentView] = useState<string>("landing");
+  const [currentView, setCurrentView] = useState<string>(() => {
+    if (typeof window !== "undefined" && window.location.hostname.includes("presensiku")) {
+      return "auth";
+    }
+    return "landing";
+  });
   const [viewParam, setViewParam] = useState<string | undefined>(undefined);
 
   // Check URL parameters on mount (e.g. ?view=absen&token=xyz or /absen)
@@ -45,6 +50,19 @@ function AppContent() {
   }, []);
 
   const handleNavigate = (view: string, param?: string) => {
+    const isMarketingDomain =
+      typeof window !== "undefined" && window.location.hostname.includes("presensi.app");
+
+    if (isMarketingDomain && ["auth", "auth_siswa", "auth_guru"].includes(view)) {
+      window.location.href = "https://presensiku.app/";
+      return;
+    }
+
+    if (!isMarketingDomain && view === "landing") {
+      setCurrentView("auth");
+      return;
+    }
+
     // Role-based view guards
     if (role === "student") {
       const forbiddenForStudents = ["siswa", "gtk", "kelas", "laporan", "pengaturan", "presensi", "presensi_detail"];
@@ -78,10 +96,10 @@ function AppContent() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Public / Standalone Views
+  // Marketing domain: public product and pricing page.
   if (currentView === "landing") {
     return (
-      <div className="min-h-screen flex flex-col bg-background">
+      <div className="landing-page min-h-screen flex flex-col">
         <Navbar onNavigate={handleNavigate} activeView={currentView} />
         <LandingView onNavigate={handleNavigate} />
       </div>

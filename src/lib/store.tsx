@@ -29,7 +29,13 @@ import {
   BrandThemePreset,
 } from "@/types";
 import { todayIso } from "@/lib/attendance";
-import { isSupabaseConfigured, syncRecordToSupabase } from "@/lib/supabase";
+import {
+  isSupabaseConfigured,
+  signInWithPassword,
+  signUpWithPassword,
+  sendWhatsAppViaEdgeFunction,
+  syncRecordToSupabase,
+} from "@/lib/supabase";
 import { applySchoolBrandColor } from "@/lib/theme";
 
 export const TERMINOLOGY_PRESETS: Record<
@@ -1515,10 +1521,10 @@ export interface SchoolContextType {
       fullName?: string;
     }
   ) => void;
-  loginWithCredentials: (email: string, pass: string, role?: AppRole) => boolean;
+  loginWithCredentials: (email: string, pass: string, role?: AppRole) => Promise<{ success: boolean; message?: string }>;
   loginTeacherOrStaff: (schoolCode: string, identifier: string, pass: string) => { success: boolean; message?: string };
   loginStudent: (schoolCode: string, nis: string, pass: string) => boolean;
-  registerAccount: (fullName: string, email: string, pass: string) => boolean;
+  registerAccount: (fullName: string, email: string, pass: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
   // Daily Attendance Automation
   dailyConfig: DailyAttendanceConfig;
@@ -1707,7 +1713,7 @@ function loadInitialState(): StoreState {
         return {
           ...fallbackState,
           ...parsed,
-          domainMode: parsed.domainMode || getInitialDomainMode(),
+          domainMode: getInitialDomainMode(),
           whatsappConfig: { ...DEFAULT_WHATSAPP_CONFIG, ...(parsed.whatsappConfig || {}) },
           whatsappLogs: parsed.whatsappLogs || [],
           academicYears: parsed.academicYears && parsed.academicYears.length > 0 ? parsed.academicYears : CLEAN_ACADEMIC_YEARS,
@@ -1869,6 +1875,13 @@ export function SchoolProvider({ children }: { children: React.ReactNode }) {
       whatsappLogs: [newLog, ...prev.whatsappLogs].slice(0, 100),
     }));
 
+    if (state.whatsappConfig.provider === "fonnte") {
+      void sendWhatsAppViaEdgeFunction(cleanPhone, message).then(({ error }) => {
+        if (error) console.error("WhatsApp Edge Function failed:", error.message);
+      });
+      return { success: true, message };
+    }
+
     return { success: true, message, waUrl };
   };
 
@@ -2007,19 +2020,21 @@ export function SchoolProvider({ children }: { children: React.ReactNode }) {
     }));
   };
 
-  const loginWithCredentials = (email: string, pass: string, targetRole?: AppRole) => {
+  const loginWithCredentials = async (email: string, pass: string, targetRole?: AppRole) => {
+    if (!pass.trim()) return { success: false, message: "Kata sandi wajib diisi." };
+
+    if (isSupabaseConfigured()) {
+      const { data, error } = await signInWithPassword(email.trim(), pass);
+      if (error || !data?.user) {
+        return { success: false, message: error?.message || "Email atau kata sandi tidak valid." };
+      }
+    }
+
     const assignedRole: AppRole =
-      targetRole ||
-      (email.includes("superadmin")
-        ? "superadmin"
-        : email.includes("admin")
-        ? "admin"
-        : email.includes("guru")
-        ? "teacher"
-        : "student");
+      targetRole || "admin";
 
     loginAs(assignedRole, email);
-    return true;
+    return { success: true };
   };
 
   const loginTeacherOrStaff = (schoolCode: string, identifier: string, pass: string) => {
@@ -2084,7 +2099,15 @@ export function SchoolProvider({ children }: { children: React.ReactNode }) {
     return true;
   };
 
-  const registerAccount = (fullName: string, email: string, pass: string) => {
+  const registerAccount = async (fullName: string, email: string, pass: string) => {
+    if (isSupabaseConfigured()) {
+      const { data, error } = await signUpWithPassword(email.trim(), pass, fullName.trim());
+      if (error) return { success: false, message: error.message };
+      if (!data?.session) {
+        return { success: false, message: "Pendaftaran berhasil. Periksa email Anda untuk konfirmasi akun." };
+      }
+    }
+
     const user: UserProfile = {
       id: `usr-${Date.now()}`,
       email,
@@ -2093,7 +2116,7 @@ export function SchoolProvider({ children }: { children: React.ReactNode }) {
       school_id: activeSchool?.id || "sch-1",
     };
     setState((prev) => ({ ...prev, currentUser: user }));
-    return true;
+    return { success: true };
   };
 
   const logout = () => {

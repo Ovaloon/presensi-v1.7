@@ -91,6 +91,31 @@ export function getSupabaseClient(): SupabaseClient | null {
 
 export const supabase = getSupabaseClient();
 
+export async function signInWithPassword(email: string, password: string) {
+  const client = getSupabaseClient();
+  if (!client) return { data: null, error: null };
+  return client.auth.signInWithPassword({ email, password });
+}
+
+export async function signUpWithPassword(email: string, password: string, fullName: string) {
+  const client = getSupabaseClient();
+  if (!client) return { data: null, error: null };
+  return client.auth.signUp({
+    email,
+    password,
+    options: { data: { full_name: fullName } },
+  });
+}
+
+export async function sendWhatsAppViaEdgeFunction(target: string, message: string) {
+  const client = getSupabaseClient();
+  if (!client) return { data: null, error: new Error("Supabase belum dikonfigurasi") };
+
+  return client.functions.invoke("send-whatsapp", {
+    body: { target, message },
+  });
+}
+
 /**
  * Test Supabase database connection and measure latency
  */
