@@ -1,0 +1,11 @@
+{
+  "name": "Presensi Sekolah SD, SMP, & SMA",
+  "description": "Aplikasi Presensi Sekolah Modern untuk SD, SMP, SMA/SMK dengan QR Code Siswa, Kios Gerbang, Validasi GPS, dan Notifikasi WhatsApp Orang Tua.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

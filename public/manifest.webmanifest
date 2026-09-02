@@ -1,0 +1,40 @@
+{
+  "name": "Presensi Sekolah - Presensiku",
+  "short_name": "Presensiku",
+  "description": "Sistem Presensi Siswa Modern Multi-Tenant dengan QR Code Dinamis, GPS & Selfie",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Presensi Siswa",
+      "short_name": "Absen",
+      "description": "Scan QR & Selfie Presensi Siswa",
+      "url": "/?view=absen",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Dashboard Guru",
+      "short_name": "Dashboard",
+      "description": "Panel Monitoring Kehadiran Kelas",
+      "url": "/?view=dashboard",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
